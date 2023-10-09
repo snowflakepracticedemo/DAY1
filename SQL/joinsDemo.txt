@@ -1,0 +1,281 @@
+
+joins:
+A JOIN clause is used to combine rows from two or more tables, based on a related column.
+
+
+we have different types of sql joins are there.
+1.inner join
+2.left join
+3.right join
+4.full join
+5.self join
+
+
+inner join:
+-----------
+Scenario: You want to retrieve a list of employees and their corresponding departments.
+Tables: "Employees" and "Departments."
+Join: Inner join based on the common column "DepartmentID" in both tables.
+Result: You will get a list of employees along with their department information, 
+including only those employees who are assigned to a department.
+
+syntax:
+SELECT column_name
+FROM table1
+INNER JOIN table2
+ON table1.column_name = table2.column_name;
+
+
+select customertable.customername,ordertable.orderaddress
+from customertable
+inner join ORDERTABLE 
+on customertable.orderid=ORDERTABLE.ORDERID;
+
+
+left join:
+----------
+Scenario: You want to analyze website traffic and see a list of all visitors along with their respective orders, if any.
+Tables: "Visitors" and "Orders."
+Join: Left join based on the common column "VisitorID" in both tables.
+Result: The result will include all visitors, whether they placed an order or not. 
+Visitors without orders will have NULL values in the order-related columns.
+
+syntax:
+SELECT column_name(s)
+FROM table1
+LEFT JOIN table2
+ON table1.column_name = table2.column_name;
+
+
+create table customerss(
+CustomerID int,
+CustomerName varchar(500),
+ContactName varchar(300),
+Address varchar(543),
+City varchar(900),
+PostalCode int,
+country varchar(789)
+);
+
+insert into customerss(CustomerID,CustomerName,ContactName,Address,City,PostalCode,country)
+values(4,'pranvi','pranvisai','suvada','brezil',45678,'germany');
+
+
+
+create table orderone(
+orderid int,
+customerid int,
+employeeid int,
+shipperid int
+);
+
+insert into orderone(orderid,customerid,employeeid,shipperid)
+values(103011,5,10,6);
+
+select * from orderone;
+select * from customerss;
+
+
+SELECT Customerss.CustomerName, Orderone.OrderID
+FROM Customerss
+LEFT JOIN Orderone ON Customerss.CustomerID = Orderone.CustomerID
+ORDER BY Customerss.CustomerName;
+
+
+Right join:
+-----------
+Scenario: You are migrating data from one system to another 
+and want to ensure that all the data from the old system is successfully transferred to the new system.
+Tables: "OldSystemData" and "NewSystemData."
+Join: Right join based on a common column "DataID" in both tables.
+Result: The result will include all records from the "NewSystemData" table, along with matching records from the "OldSystemData" table. 
+Records from the new system without a match in the old system will have NULL values in the old system's columns.
+
+
+syntax:
+SELECT column_name
+FROM table1
+RIGHT JOIN table2
+ON table1.column_name = table2.column_name;
+
+create table employeeone(
+employeeid int,
+lastname varchar(489),
+firstname varchar(655),
+address varchar(298)
+);
+
+
+insert into employeeone(employeeid,lastname,firstname,address)
+values(4,'shatj','	pojng','kakinada');
+
+SELECT Orderone.OrderID, Employeeone.LastName, Employeeone.FirstName
+FROM Orderone
+RIGHT JOIN Employeeone ON Orderone.EmployeeID = Employeeone.EmployeeID
+ORDER BY Orderone.OrderID;
+
+
+full join:
+---------
+Scenario: You are performing a data reconciliation process between two data sources to identify any discrepancies.
+Tables: "SourceAData" and "SourceBData."
+Join: Full join based on a common column "RecordID" in both tables.
+Result: The result will include all records from both tables, matching records from both sources, and unmatched records from either source. 
+Records without a match in one source will have NULL values in the corresponding columns.
+
+syntax:
+SELECT column_name
+FROM table1
+FULL OUTER JOIN table2
+ON table1.column_name = table2.column_name
+WHERE condition;
+
+SELECT Customerss.CustomerName, Orderone.OrderID
+FROM Customerss
+FULL OUTER JOIN Orderone ON Customerss.CustomerID=Orderone.CustomerID
+ORDER BY Customerss.CustomerName;
+
+
+self join:
+A self join is a regular join, but the table is joined with itself.
+
+syntax:
+SELECT column_name(s)
+FROM table1 T1, table1 T2
+WHERE condition;
+
+
+create table studentone(
+studentid int,
+studentname varchar(234),
+studentage int,
+studentmarks int
+);
+
+insert into studentone(studentid,studentname,studentage,studentmarks)
+values(5,'studentfive',20,67);
+
+select * from studentone  t1
+,
+studentone  t2
+where 
+t1.STUDENTMARKS = t2.STUDENTMARKS
+
+
+union:
+---------
+The UNION operator is used to combine the result-set of two or more SELECT statements.
+
+syntax:
+SELECT column_name FROM table1
+UNION
+SELECT column_name FROM table2;
+
+select * from customerss;
+select * from orderone;
+
+select customerid from customerss
+union
+select customerid from orderone
+order by customerid;
+
+
+
+union All:
+---------
+The UNION operator selects only distinct values by default. To allow duplicate values, use UNION ALL:
+
+Syntax:
+SELECT column_name FROM table1
+UNION ALL
+SELECT column_name FROM table2;
+
+
+select customerid from  customerss
+union all
+select customerid from orderone;
+order by customerid;
+
+
+Group by:
+----------
+The GROUP BY statement groups rows that have the same values into summary rows, like "find the number of customers in each country".
+
+The GROUP BY statement is often used with aggregate functions (COUNT(), MAX(), MIN(), SUM(), AVG()) to group the result-set by one or more columns.
+
+Syntax:
+SELECT column_name
+FROM table_name
+WHERE condition
+GROUP BY column_name
+ORDER BY column_name;
+
+SELECT COUNT(CustomerID), Country
+FROM Customerss
+GROUP BY Country;
+
+SELECT COUNT(CustomerID), Country
+FROM Customerss
+GROUP BY Country
+order by count(customerid) desc;
+
+
+Having:
+--------
+The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+
+syntax:
+SELECT column_name
+FROM table_name
+WHERE condition
+GROUP BY column_name
+HAVING condition
+ORDER BY column_name;
+
+select count(customerid),city
+from customerss
+group by city
+having count(customerid)>1;
+
+
+Exists:
+--------
+The EXISTS operator is used to test for the existence of any record in a subquery.
+The EXISTS operator returns TRUE if the subquery returns one or more records.
+
+
+create table products(
+productid int,
+productname varchar(300),
+SupplierID int,
+CategoryID int,
+Price int
+);
+
+insert into products(productid,productname,SupplierID,CategoryID,Price)
+values(5,'	Chef Antons Gumbo Mix',2,2,21);
+
+create table supplier(
+supplierid int,
+suppliername varchar(209),
+contactname varchar(578),
+address varchar(567),
+city varchar(234),
+postalcode int,
+country varchar(545)
+);
+
+insert into supplier(supplierid,suppliername,contactname,address,city,postalcode,country)
+values(4,'Tokyo Traders','Yoshi Nagase ','9-8 Sekimai Musashino-shi','Tokyo',70113,'japan');
+
+
+syntax:
+SELECT column_name
+FROM table_name
+WHERE EXISTS
+(SELECT column_name FROM table_name WHERE condition);
+
+
+SELECT SupplierName
+FROM Supplier
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Supplier.supplierID AND Price < 20);
